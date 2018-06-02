@@ -1,4 +1,5 @@
 /* Graphics in MSDOS Borland Turbo C 2.01
+   https://www.cs.colorado.edu/~main/bgi/doc/
    Coordinates start from LEFT UPPER corner
    and are counted in PIXELS.
    These will be referred to as GLOBAL coordinates.
@@ -8,8 +9,7 @@
 #include <graphics.h>
 #include <math.h>
 
-/* These will be used to determine the step size of x and y axis
-   draw_parabola does not yet support different X and Y scaling */
+/* These will be used to determine the step size of x and y axis */
 #define SCALEX 25
 #define SCALEY 25
 
@@ -20,21 +20,18 @@
 void draw_xy_axis(int xlen, int ylen, int stepx, int stepy, int freq);
 
 /* Draws a quadratic function f(x) = ax^2 + bx + c
-  Requires SCALEX == SCALEY to draw correctly
-  xmin, xmax - draws the parabola for values of x from min to max
-  x0, y0 - global coordinates for 0,0
-  one - step size of x and y axis
+  Assumes 0,0 is in the middle of the screen
+  one - axis step in pixels
+  xmin, xmax - draws the parabola for values of x from xmin to xmax
   a, b, c - quadratic function parameters */
-void draw_parabola(float xmin, float xmax, int x0, int y0,
-                   int one, float a, float b, float c);
+void draw_parabola(int one, float xmin, float xmax, float a, float b, float c);
 
 int main()
 {
-    int midx, midy, stepx, stepy, one, gd = DETECT, gm;
+    int stepx, stepy, one, gd = DETECT, gm;
     char msg[40];
     
     initgraph(&gd, &gm, "");
-    midx = getmaxx() / 2; midy = getmaxy() / 2;
     stepx = getmaxx() / SCALEX;
     stepy = getmaxy() / SCALEY;
     
@@ -46,23 +43,22 @@ int main()
     
     /* Drawing x^2 */
     setcolor(RED);
-    draw_parabola(-3.0, 3.0, midx, midy, stepy, 1.0, 0.0, 0.0);
+    draw_parabola(stepy, -3.0, 3.0, 1.0, 0.0, 0.0);
     
     getch();
     closegraph();
     return 0;
 }
 
-void draw_parabola(float xmin, float xmax, int x0, int y0,
-                   int one, float a, float b, float c)
+void draw_parabola(int one, float xmin, float xmax, float a, float b, float c)
 {
-    float x, y, step;
-    /* this is the step of drawing the curve,
-       one line is drawn per each step */
-    step = one * (0.1 / SCALEY);
+    float x, y, step, x0, y0;
+    /* x will be increasing by step from xmin to xmax */
+    step = 0.1;
     
-    /* avoids infinite loop in case step was set incorrectly */
-    if (step == 0) return;
+    /* set 0,0 point to be in the middle of the screen */
+    x0 = getmaxx() / 2;
+    y0 = getmaxy() / 2;
     
     /* determine the leftmost Y to start drawing from */
     y = a * xmin * xmin + b * xmin + c;
@@ -86,10 +82,10 @@ void draw_xy_axis(int xlen, int ylen, int stepx, int stepy, int freq)
     int x0, y0, xneg, yneg, xpos, ypos, i;
     char msg[40];
     
-	/* set 0,0 point to be in the middle of the screen */
-	x0 = getmaxx() / 2;
-	y0 = getmaxy() / 2;
-	
+    /* set 0,0 point to be in the middle of the screen */
+    x0 = getmaxx() / 2;
+    y0 = getmaxy() / 2;
+
     xneg = x0 - stepx * xlen; /* the leftmost point of x axis */
     xpos = x0 + stepx * xlen; /* the rightmost point of x axis */
     yneg = y0 + stepy * ylen; /* the lowest point of y axis */
@@ -97,16 +93,16 @@ void draw_xy_axis(int xlen, int ylen, int stepx, int stepy, int freq)
     
     line(xneg, y0, xpos, y0); /* draw x */
     line(x0, yneg, x0, ypos); /* draw y */
-	
-	/* draw arrows and axis labels */
-	line(xpos, y0 + 2, xpos + 5, y0); /* x */
-	line(xpos + 5, y0, xpos, y0 - 2);
-	outtextxy(xpos - 5, y0 - textheight("x") - 10, "x");
-	
-	line(x0 - 2, ypos, x0, ypos - 5); /* y */
-	line(x0, ypos - 5, x0 + 2, ypos);
-	outtextxy(x0 - textwidth("y") - 10, ypos - 5, "y");
-	
+
+    /* draw arrows and axis labels */
+    line(xpos, y0 + 2, xpos + 5, y0); /* x */
+    line(xpos + 5, y0, xpos, y0 - 2);
+    outtextxy(xpos - 5, y0 - textheight("x") - 10, "x");
+
+    line(x0 - 2, ypos, x0, ypos - 5); /* y */
+    line(x0, ypos - 5, x0 + 2, ypos);
+    outtextxy(x0 - textwidth("y") - 10, ypos - 5, "y");
+
     /* draw values along the x axis */
     for (i = xneg; i <= xpos; i += stepx)
     {
