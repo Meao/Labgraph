@@ -22,10 +22,9 @@ void draw_xy_axis(int xlen, int ylen, int stepx, int stepy, int freq);
 /* Draws a cycloid function
   Assumes 0,0 is in the middle of the screen
   one - axis step in pixels
-  r - cycloid radius
   tmin, tmax - parameter t value range
   a, b - cycloid parameters */
-void draw_cycloid(int one, float r, float tmin, float tmax, float a, float b);
+void draw_cycloid(int one, float tmin, float tmax, float a, float b);
 
 int main()
 {
@@ -44,14 +43,14 @@ int main()
     
     /* Drawing */
     setcolor(RED);
-    draw_cycloid(stepy, 1.5, -3 * M_PI, 3 * M_PI, 1.0, 3.0);
+    draw_cycloid(stepy, -3 * M_PI, 3 * M_PI, 1.5, 3.0);
     
     getch();
     closegraph();
     return 0;
 }
 
-void draw_cycloid(int one, float r, float tmin, float tmax, float a, float b)
+void draw_cycloid(int one, float tmin, float tmax, float a, float b)
 {
     float x, y, t, step, x0, y0;
     /* t will be increasing by step from tmin to tmax */
@@ -61,15 +60,15 @@ void draw_cycloid(int one, float r, float tmin, float tmax, float a, float b)
     x0 = getmaxx() / 2;    y0 = getmaxy() / 2;
     
     /* determine the starting drawing point */
-    x = r * tmin - b * sin(tmin);
-    y = r - b * cos(tmin);
+    x = a * tmin - b * sin(tmin);
+    y = a - b * cos(tmin);
     /* move current position to the starting point */
     moveto(x0 + x * one, y0 - y * one);
     /* for all values from tmin to tmax, differentiating by step */
     for (t = tmin + step; t <= tmax; t += step)
     {
-        x = r * t - b * sin(t);
-        y = r - b * cos(t);
+        x = a * t - b * sin(t);
+        y = a - b * cos(t);
         /* draw a line from current position to new X,Y point */
         lineto(x0 + x * one, y0 - y * one);
     }
