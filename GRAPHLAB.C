@@ -11,7 +11,7 @@
 
 /* Used to determine the step size of x and y axis */
 #define SCALEX 25
-#define SCALEY 25
+#define SCALEY 15
 /* The independent variable is incremented by this value */
 #define STEP 0.1
 /* Drawing delay for each step in ms */
@@ -45,16 +45,16 @@ int main(void)
     /* Setting up the graph space */
     setbkcolor(WHITE);
     setcolor(BLUE);
-    draw_xy_axis(12, 12, 1);
+    draw_xy_axis(12, 9, 1);
     
     /* Drawing x^2 */
     setcolor(RED);
-    draw_parabola(-3.0, 3.0, 1.0, 0.0, 0.0);
+    draw_parabola(-2.5, 2.5, 1.0, 0.0, 0.0);
     
     getch();
     /* Drawing cycloid */
     setcolor(GREEN);
-    draw_cycloid(-3 * M_PI, 3 * M_PI, 1.5, 3.0);
+    draw_cycloid(-2.5 * M_PI, 2.5 * M_PI, 1.5, 3.0);
     
     getch();
     closegraph();
@@ -86,15 +86,14 @@ void init(void)
 
 void draw_parabola(float xmin, float xmax, float a, float b, float c)
 {
-    float x, y, one;
-    one = STEPY; /* placeholder variable */
+    float x, y;
     
     /* determine the leftmost Y to start drawing from */
     y = a * xmin * xmin + b * xmin + c;
     /* move current position to the starting point
-      (x * one) converts x value to global coordinates
-      (X0 + x * one) offsets it by where 0,0 point is */
-    moveto(X0 + xmin * one, Y0 - y * one);
+      (x * STEPX) converts x value to global coordinates
+      (X0 + x * STEPX) offsets it by where 0,0 point is */
+    moveto(X0 + xmin * STEPX, Y0 - y * STEPY);
     
     /* for all values from xmin to xmax, differentiating by STEP */
     for (x = xmin + STEP; x <= xmax; x += STEP)
@@ -102,28 +101,27 @@ void draw_parabola(float xmin, float xmax, float a, float b, float c)
         /* calculate Y for the point */
         y = a * x * x + b * x + c;
         /* draw a line from current position to new X,Y point */
-        lineto(X0 + x * one, Y0 - y * one);
+        lineto(X0 + x * STEPX, Y0 - y * STEPY);
         delay(DELAY);
     }
 }
 
 void draw_cycloid(float tmin, float tmax, float a, float b)
 {
-    float x, y, t, one;
-    one = STEPY; /* Placeholder variable */
+    float x, y, t;
     
     /* determine the starting drawing point */
     x = a * tmin - b * sin(tmin);
     y = a - b * cos(tmin);
     /* move current position to the starting point */
-    moveto(X0 + x * one, Y0 - y * one);
+    moveto(X0 + x * STEPX, Y0 - y * STEPY);
     /* for all values from tmin to tmax, differentiating by STEP */
     for (t = tmin + STEP; t <= tmax; t += STEP)
     {
         x = a * t - b * sin(t);
         y = a - b * cos(t);
         /* draw a line from current position to new X,Y point */
-        lineto(X0 + x * one, Y0 - y * one);
+        lineto(X0 + x * STEPX, Y0 - y * STEPY);
         delay(DELAY);
     }
 }
