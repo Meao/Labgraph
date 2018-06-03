@@ -21,7 +21,7 @@ int main()
     
     setbkcolor(WHITE);
     rad = 100;
-    halfside = floor(rad * cos(45 * M_PI / 180)); /* b = 2a * cos(45) */
+    halfside = floor(0.5 * sqrt(2 * rad * rad));
     
     setcolor(BLUE);
     rectangle(midx - halfside, midy - halfside, midx + halfside, midy + halfside);
