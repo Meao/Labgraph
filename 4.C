@@ -1,9 +1,5 @@
 /* Graphics in MSDOS Borland Turbo C 2.01
-   https://www.cs.colorado.edu/~main/bgi/doc/
-   Coordinates start from LEFT UPPER corner
-   and are counted in PIXELS.
-   These will be referred to as GLOBAL coordinates.
-*/
+   https://www.cs.colorado.edu/~main/bgi/doc/ */
 
 #include <stdio.h>
 #include <graphics.h>
@@ -13,16 +9,16 @@ int main()
 {
     int midx, midy, color, rad, gd = DETECT, gm;
     float halfside;
-    
+
     initgraph(&gd, &gm, "");
-    
+
     midx = getmaxx() / 2;
     midy = getmaxy() / 2;
-    
+
     setbkcolor(WHITE);
     rad = 100;
-    halfside = floor(rad * cos(45 * M_PI / 180)); /* b = 2a * cos(45) */
-    
+    halfside = 0.5 * sqrt(2 * rad * rad);
+
     setcolor(BLUE);
     rectangle(midx - halfside, midy - halfside, midx + halfside, midy + halfside);
     
@@ -37,3 +33,4 @@ int main()
     closegraph();
     return 0;
 }
+
